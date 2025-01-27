@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-final String contactTable = "contactTable";
-final String idColumn = "idColumn";
-final String nameColumn = "nameColumn";
-final String emailColumn = "emailColumn";
-final String phoneColumn = "phoneColumn";
-final String imgColumn = "imgColumn";
+const String contactTable = "contactTable";
+const String idColumn = "idColumn";
+const String nameColumn = "nameColumn";
+const String emailColumn = "emailColumn";
+const String phoneColumn = "phoneColumn";
+const String imgColumn = "imgColumn";
 
 class ContactHelper {
   static final ContactHelper instance = ContactHelper.internal();
@@ -16,17 +16,18 @@ class ContactHelper {
 
   ContactHelper.internal();
 
-  late Database _db;
+  Database? _db;
 
   Future<Database> get db async {
     if (_db == null) {
       _db = await initDb();
 
-      return _db;
-    } else {
-      return _db;
+      return _db!;
     }
-  }
+
+      return _db!;
+    }
+
 
   Future<Database> initDb() async {
     final databasesPath = await getDatabasesPath();
@@ -46,7 +47,7 @@ class ContactHelper {
 
     return contact;
   }
-
+  
 
   Future<Contact?> getContact(int id) async{
     Database dbContact = await db;
@@ -82,7 +83,7 @@ class ContactHelper {
   Future<List<Contact>> getAllContacts() async{
     Database dbContact = await db;
 
-    List listMap = await dbContact.query("SELECT * FROM $contactTable");
+    List<Map<String, dynamic>> listMap = await dbContact.query(contactTable);
 
     List<Contact> listContact = [];
 
@@ -111,17 +112,17 @@ class ContactHelper {
 
 class Contact {
   int? id;
-  String name;
-  String email;
-  String phone;
-  String img;
+  String? name;
+  String? email;
+  String? phone;
+  String? img;
 
   Contact({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.img,
+    this.id,
+    this.name,
+    this.email,
+    this.phone,
+    this.img,
   });
 
   Contact.fromMap(Map<String, dynamic> map)
@@ -134,10 +135,10 @@ class Contact {
   Map<String, dynamic> toMap() {
     final map = {
       idColumn: id,
-      nameColumn: name,
-      emailColumn: email,
-      phoneColumn: phone,
-      imgColumn: img,
+      if (name != null) nameColumn: name,
+      if (email != null) emailColumn: email,
+      if (phone != null) phoneColumn: phone,
+      if (img != null) imgColumn: img,
     };
 
     if (id != null) {
