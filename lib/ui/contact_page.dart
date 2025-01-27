@@ -30,13 +30,14 @@ class _ContactPageState extends State<ContactPage> {
 
     if(widget.contact == null) {
       _editedContact = Contact();
-    } else {
-      _editedContact = Contact.fromMap(widget.contact!.toMap());
+    }else {
+      final contactMap = widget.contact?.toMap();
+      _editedContact = Contact.fromMap(contactMap!);
     }
 
-    _nameController.text = _editedContact.name!;
-    _emailController.text = _editedContact.email!;
-    _phoneController.text = _editedContact.phone!;
+    _nameController.text = _editedContact.name ?? "";
+    _emailController.text = _editedContact.email ?? "";
+    _phoneController.text = _editedContact.phone ?? "";
 
   }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:contacts/helpers/contact_helper.dart';
+import 'package:contacts/ui/contact_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget{
@@ -21,11 +22,7 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    helper.getAllContacts().then((list){
-      setState(() {
-        contacts = list;
-      });
-    });
+    _getAllContacts();
   }
 
   @override
@@ -38,7 +35,9 @@ class HomePageState extends State<HomePage> {
       ),
 
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(onPressed: (){},
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        _showContactPage();
+      },
       child: Icon(Icons.add),
       backgroundColor: Colors.red,
       ),
@@ -100,7 +99,39 @@ class HomePageState extends State<HomePage> {
           ),
           ),
       ),
+
+      onTap: (){
+        _showContactPage(contact: contacts[index]);
+      },
     );
   }
+
+  Future<void> _showContactPage({Contact? contact}) async {
+
+    final recContact = await Navigator.push(context,
+      MaterialPageRoute(builder: (context) => ContactPage(contact: contact,))
+    );
+
+    if(recContact != null){
+      if(Contact != null){
+        await helper.updateContact(recContact);
+        _getAllContacts();
+      } else {
+        await helper.saveContact(recContact);
+      }
+
+      _getAllContacts();
+    }
+
+  }
+
+  void _getAllContacts(){
+    helper.getAllContacts().then((list){
+      setState(() {
+        contacts = list;
+      });
+    });
+  }
+
 }
 
